@@ -2,10 +2,9 @@ import 'dotenv/config';
 
 import fastify from 'fastify';
 import userRoutes from './modules/user/user.route';
-import swaggerConfig from './swagger.config.json';
+import swaggerConfig from './swagger.config.json'; // Cannot use this since that's a fastify bug
 import fastifySwagger from '@fastify/swagger';
 import { FastifyRequest, FastifyReply } from 'fastify';
-
 
 /*
 *   Logging level
@@ -15,23 +14,24 @@ const api = fastify({ logger: { level: 'warn' } });
 /*
 *   Plugins setup
 */
-api.register(fastifySwagger, {
-  mode: 'dynamic',
-  exposeRoute: true,
-  uiConfig: {},
-  routePrefix: '/doc',
-  swagger: {
-    info: {
-        "title": "OATREA",
-        "description": "Undefined yet",
-        "version": "0.1.0"
-    },
-    host: 'localhost',
-    schemes: ['https'],
-    consumes: ['application/json'],
-    produces: ['application/json']
-  }
-});
+console.log(swaggerConfig);
+api.register(fastifySwagger, swaggerConfig)
+//   mode: 'dynamic',
+//   exposeRoute: true,
+//   uiConfig: {},
+//   routePrefix: '/doc',
+//   swagger: {
+//     info: {
+//         title: "OATREA",
+//         description: "Undefined yet",
+//         version: "0.1.0"
+//     },
+//     host: 'localhost',
+//     schemes: ['https'],
+//     consumes: ['application/json'],
+//     produces: ['application/json']
+//   }
+// });
 
 /*
 *   Security Headers
@@ -52,24 +52,29 @@ api.addHook('preHandler', (_request: FastifyRequest, reply: FastifyReply, done) 
 api.register(userRoutes, { prefix: "user" });
 
 // Basic health check
-api.route({
-    method: 'GET',
-    url:  '/health',
-    schema: {
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            status: { type: 'string' },
-            timestamp: { type: 'number' }
+api.register(async () => {
+  api.route({
+      method: 'GET',
+      url:  '/health',
+      schema: {
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              status: { type: 'string' },
+              timestamp: { type: 'number' }
+            }
           }
         }
+      },
+      handler: (_request: FastifyRequest, reply: FastifyReply) => {
+        reply.send({ 
+          status: 'alive',
+           timestamp: new Date().valueOf() 
+        });
       }
-    },
-    handler: (_request: FastifyRequest, reply: FastifyReply) => {
-      reply.send({ status: 'alive', timestamp: new Date().valueOf() });
-    }
-});
+  });
+})
 
 /*
 *   Run the API

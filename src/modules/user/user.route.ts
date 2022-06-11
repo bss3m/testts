@@ -6,7 +6,16 @@ const userRoutes = async (api: FastifyInstance) => {
     api.route({
         method: 'GET',
         url:  '/test',
-        schema: {},
+        schema: {
+            response: {
+                200: {
+                  type: 'object',
+                  properties: {
+                    test: { type: 'string' },
+                  }
+                }
+            }
+        },
         handler: userController.testFunction
     });
 }

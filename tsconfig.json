@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      "outDir": "dist",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "noImplicitAny": true,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "sourceMap": false,
+      "alwaysStrict": true,
+      "allowUnusedLabels": false,
+      "allowUnreachableCode": false,
+      "noImplicitReturns": true,
+      "strict": true,
+      "lib": [
+        "ES2016"
+        ],
+      "resolveJsonModule": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
+}
